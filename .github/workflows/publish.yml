@@ -1,7 +1,6 @@
 name: Publish to npm
 
 on:
-  workflow_dispatch:
   push:
     tags:
       - "v*.*.*"
@@ -35,8 +34,10 @@ jobs:
           package-manager-cache: false
           registry-url: https://registry.npmjs.org
 
+      - name: Set up npm
+        run: npm install --global "npm@^11.5.1"
+
       - name: Verify release tag
-        if: startsWith(github.ref, 'refs/tags/')
         shell: bash
         run: |
           package_version="$(node --print "require('./package.json').version")"
@@ -64,5 +65,3 @@ jobs:
 
       - name: Publish package
         run: npm publish --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
