@@ -1,0 +1,63 @@
+{
+  "name": "prettier-plugin-valve-css",
+  "version": "0.1.0",
+  "description": "A Prettier plugin for Valve Panorama CSS",
+  "keywords": [
+    "counter-strike",
+    "css",
+    "panorama",
+    "plugin",
+    "prettier",
+    "source2",
+    "valve"
+  ],
+  "homepage": "https://github.com/busheezy/prettier-plugin-valve-css#readme",
+  "bugs": {
+    "url": "https://github.com/busheezy/prettier-plugin-valve-css/issues"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/busheezy/prettier-plugin-valve-css.git"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "RELEASING.md",
+    "LICENSE"
+  ],
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "types": "./dist/index.d.ts",
+    "import": "./dist/index.js"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "prepack": "npm run build",
+    "fmt": "oxfmt",
+    "fmt:check": "oxfmt --check",
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix",
+    "typecheck": "tsc --noEmit",
+    "check-all": "oxfmt && oxlint --fix && tsc --noEmit"
+  },
+  "devDependencies": {
+    "oxfmt": "^0.64.0",
+    "oxlint": "^1.79.0",
+    "prettier": "^3.9.6",
+    "typescript": "^5.9.2"
+  },
+  "peerDependencies": {
+    "prettier": ">=3.0.0"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "packageManager": "pnpm@11.21.0"
+}

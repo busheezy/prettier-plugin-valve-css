@@ -1,0 +1,64 @@
+name: Publish to npm
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: npm-publish-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Publish
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          run_install: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          package-manager-cache: false
+          registry-url: https://registry.npmjs.org
+
+      - name: Verify release tag
+        shell: bash
+        run: |
+          package_version="$(node --print "require('./package.json').version")"
+          tag_version="${GITHUB_REF_NAME#v}"
+
+          if [ "$package_version" != "$tag_version" ]
+          then
+              echo "package.json version $package_version does not match tag $GITHUB_REF_NAME"
+              exit 1
+          fi
+
+      - name: Set repository metadata
+        shell: bash
+        run: |
+          repository_url="https://github.com/${GITHUB_REPOSITORY}.git"
+
+          npm pkg set repository.type=git
+          npm pkg set repository.url="$repository_url"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build package
+        run: pnpm build
+
+      - name: Publish package
+        run: npm publish
